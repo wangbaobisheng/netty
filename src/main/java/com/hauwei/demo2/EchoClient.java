@@ -8,6 +8,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
+import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 
 public class EchoClient {
@@ -26,7 +27,7 @@ public class EchoClient {
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
                             ByteBuf delimter = Unpooled.copiedBuffer("$_".getBytes());
                             socketChannel.pipeline().addLast(new DelimiterBasedFrameDecoder(1024, delimter));
-                            socketChannel.pipeline().addLast(new StringEncoder());
+                            socketChannel.pipeline().addLast(new StringDecoder());
                             socketChannel.pipeline().addLast(new EchoClientHandler());
                         }
                     });
@@ -57,7 +58,7 @@ public class EchoClient {
         @Override
         public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
             System.out.println("This is " + ++counter + " times receive server : ["
-            + msg + "]");
+            + (String)msg + "]");
         }
 
         @Override
